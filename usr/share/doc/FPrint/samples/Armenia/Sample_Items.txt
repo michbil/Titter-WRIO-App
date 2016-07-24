@@ -1,0 +1,10 @@
+1;1;1;0.01;Test item 01;
+2;2;1;0.02;Test item 02;
+3;3;2;0.02;Test item 03;
+4;4;3;0.01;Test item 04;
+5;5;3;0.02;Test item 05;
+1;6;3;0.01;Test item 06;
+1;7;4;0.01;Test item 07;
+3;8;5;0.02;Test item 08;
+3;9;6;0.01;Test item 09;
+3;10;7;0.02;Test item 10;

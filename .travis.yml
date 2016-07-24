@@ -1,17 +1,33 @@
 language: node_js
 
 node_js:
-  - 0.10
+  - 0.12
 
 before_install:
-  - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+  - sudo apt-get update && sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+  - NODE_ENV=development
+  - npm install -g npm@3
 
-install: npm install
+install: 
+  - npm install
+  - npm install -g gulp
 
-script: npm start
+before_script: NODE_ENV=production
+
+services: mongodb
+
+script:
+  - cp config.json.travis config.json
+  - gulp
+  - gulp test
+  - npm start
 
 after_success:
-  - npm run canBumpVersion
+  - if [ "$TRAVIS_BRANCH" == "production" ] && [ "$(git log -1 --format='%an')" == "Alexey Anshakov" ]; then npm run bumpVersion; fi
+
+before_deploy:
+- gem install mime-types -v 2.6.2
+
 
 deploy:
   - provider: opsworks
@@ -22,6 +38,7 @@ deploy:
     app-id: 4539a5ac-9d5f-4ce1-bbac-e3456b3b4c22
     on:
       repo: webRunes/Titter-WRIO-App
+      branch: production
   - provider: s3
     access_key_id:
       secure: mR+kXkYTSLM50ICSs7Fm29iFpJo8jCsyYKiyF8ZlBhzmSP8GoHpcsSWd6J/HFnW1WQqa6vAmv/Sxd1Lr23AnxtKyGm+ROej2QQWrp2EouHLEFxuOwy2whLDqAvQcyZyi4eRqeWicAFhM/qrkK4EdvgbsgBqXIY9RXEH1y6Hgxi4=
@@ -30,4 +47,6 @@ deploy:
     bucket: wrioos.com
     upload-dir: Titter-WRIO-App
     acl: public_read
+    on:
+      branch: production
 
